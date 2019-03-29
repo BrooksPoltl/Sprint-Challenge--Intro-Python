@@ -2,12 +2,10 @@
 # fields for name, latitude, and longitude.
 import csv
 class City:
-  def __init__(self, name, latitude, longitude):
+  def __init__(self, name, lat, lon):
     self.name = name
-    self.latitude = latitude
-    self.longitude = longitude
-  def __str__(self):
-        return str(self.__dict__)
+    self.lat = lat
+    self.lon = lon
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -31,13 +29,13 @@ def cityreader(cities=[]):
     reader = csv.reader(f)
     for row in reader:
       cities.append(City(row[0], row[3], row[4]))
+    cities.pop(0)
     return cities
 
 cityreader(cities)
 # Print the list of cities (name, lat, lon), 1 record per line.
-for c in cities:
-    print(c)
-
+# for c in cities:
+#     print(c)
 # STRETCH GOAL!
 #
 # Allow the user to input two points, each specified by latitude and longitude.
@@ -72,9 +70,30 @@ for c in cities:
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
   within = []
-
+  if type(lat1) != float:
+    lat1 = float(lat1)
+  elif type(lat2) != float:
+    lat2 = float(lat2)
+  elif type(lon1) != float:
+    lon1 = float(lon1)
+  elif type(lon2) != float:
+    lon2 = float(lon2)
+  if lat1 > lat2:
+    global lat_tuple 
+    lat_tuple = (lat2, lat1)
+  else:
+    lat_tuple = (lat1, lat2)
+  if lon1 > lon2:
+    global lon_tuple
+    lon_tuple = (lon2, lon1)
+  else:
+    lon_tuple = (lon1, lon2)
   # TODO Ensure that the lat and lon valuse are all floats
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
-
+  print(lat_tuple, lon_tuple)
+  for city in cities:
+    if lon_tuple[1] > float(city.lon) and lon_tuple[0] < float(city.lon):
+      if lat_tuple[1] > float(city.lat) and lat_tuple[0] < float(city.lat):
+        within.append(City(city.name, float(city.lat),float(city.lon)))
   return within
